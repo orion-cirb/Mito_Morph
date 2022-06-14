@@ -32,7 +32,7 @@ import loci.plugins.util.ImageProcessorReader;
 import mcib3d.geom.Object3D;
 import mcib3d.geom.Objects3DPopulation;
 import mcib3d.geom.Objects3DPopulationColocalisation;
-import mcib3d.geom.PairColocalisation;
+import mcib3d.geom.PairColocalisationOld;
 import mcib3d.image3d.ImageHandler;
 import mcib3d.image3d.ImageInt;
 import mcib3d.image3d.ImageLabeller;
@@ -62,7 +62,7 @@ public class Mito_Processing {
     private double minDNA = 0.004;
     private double maxDNA = 1;
     // Nucleus filter
-    private double minNuc = 50;
+    private double minNuc = 5;
     private double maxNuc = Double.MAX_VALUE;
     // Mito filter size
     private double minMito = 0.05;
@@ -278,6 +278,8 @@ public class Mito_Processing {
             gd.addMessage("No StarDist model found in Fiji !!", Font.getFont("Monospace"), Color.red);
             gd.addFileField("StarDist model :", stardistModel);
         }
+        gd.addNumericField("Min nucleus size (µm3) : ", minNuc, 3);
+        gd.addNumericField("Max nucleus size (µm3) : ", maxNuc, 3);
         gd.addNumericField("Min DNA size (µm3) : ", minDNA, 3);
         gd.addNumericField("Max DNA size (µm3) : ", maxDNA, 3);
         gd.addMessage("Image calibration", Font.getFont("Monospace"), Color.blue);
@@ -301,6 +303,8 @@ public class Mito_Processing {
             IJ.error("No model specify !!");
             return(null);
         }
+        minNuc = gd.getNextNumber();
+        maxNuc = gd.getNextNumber();
         minDNA = gd.getNextNumber();
         maxDNA = gd.getNextNumber();
         cal.pixelWidth = gd.getNextNumber();
@@ -353,6 +357,7 @@ public class Mito_Processing {
         return(imgCLBin);
     }
     
+    
     /**
      * Remove Outliers
      * 
@@ -371,7 +376,7 @@ public class Mito_Processing {
         }
     }
 
-     /**
+    /**
      * Nucleus segmentation
      * @param imgNuc
      * @param roi
@@ -396,7 +401,8 @@ public class Mito_Processing {
         clij2.release(imgLabelled);
         clearOutSide(imgBin, roi);
         imgBin.setCalibration(cal);
-        Objects3DPopulation nucPop = new Objects3DPopulation(getPopFromImage(imgBin).getObjectsWithinVolume(minNuc, maxNuc, true));
+        Objects3DPopulation pop = new Objects3DPopulation(ImageInt.wrap(imgBin));
+        Objects3DPopulation nucPop = new Objects3DPopulation(pop.getObjectsWithinVolume(minNuc, maxNuc, true));
         flush_close(imgBin);
         return(nucPop);
     }
@@ -463,6 +469,7 @@ public class Mito_Processing {
         imgLab.setCalibration(cal);
         clearOutSide(imgLab, roi);
         nucPop.draw(imgLab.getImageStack(), 0);
+        imgLab.setCalibration(cal);
         Objects3DPopulation dnaPop = new Objects3DPopulation(getPopFromImage(imgLab).getObjectsWithinVolume(minDNA, maxDNA, true));
         flush_close(imgLab);
         return(dnaPop);
@@ -630,8 +637,8 @@ public class Mito_Processing {
     public Objects3DPopulation findDnaInMito(Objects3DPopulation dnaPop, Objects3DPopulation mitoPop) {
         Objects3DPopulation dnaMitoPop = new Objects3DPopulation();
         Objects3DPopulationColocalisation coloc =  new Objects3DPopulationColocalisation(dnaPop, mitoPop);
-        ArrayList<PairColocalisation> pairColoc = coloc.getAllColocalisationPairs();
-        for (PairColocalisation p : pairColoc) {
+        ArrayList<PairColocalisationOld> pairColoc = coloc.getAllColocalisationPairs();
+        for (PairColocalisationOld p : pairColoc) {
             int volColoc = p.getVolumeColoc();
             if (volColoc > 0)
                 dnaMitoPop.addObject(p.getObject3D1());

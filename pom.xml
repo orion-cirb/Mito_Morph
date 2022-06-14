@@ -59,9 +59,9 @@
                         <version>6.3.1</version>
                 </dependency>
                 <dependency>
-			<groupId>com.github.mcib3d</groupId>
+			<groupId>org.framagit.mcib3d</groupId>
 			<artifactId>mcib3d-core</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.63</version>
                         <type>jar</type>
                 </dependency>
                 <dependency>
@@ -142,16 +142,22 @@
 	  <version>0.21.5</version>
 	  <type>jar</type>
 	 </dependency>
+	 <dependency>
+	  <groupId>org.framagit.mcib3d</groupId>
+	  <artifactId>mcib3d-core</artifactId>
+	  <version>4.0.63</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
         <repositories>
             <repository>
 		<id>imagej.public</id>
-		<url>http://maven.imagej.net/content/groups/public</url>
+		<url>https://maven.imagej.net/content/groups/public</url>
             </repository>
             <repository>
                 <id>ome</id>
                 <name>Bio-Formats Repo</name>
-                <url>http://artifacts.openmicroscopy.org/artifactory/maven</url>
+                <url>https://artifacts.openmicroscopy.org/artifactory/maven</url>
             </repository>
             <repository>
                 <id>jitpack.io</id>
