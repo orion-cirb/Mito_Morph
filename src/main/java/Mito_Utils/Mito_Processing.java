@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.ImageIcon;
 import loci.common.services.DependencyException;
@@ -116,19 +117,14 @@ public class Mito_Processing {
     /*
     Find starDist models in Fiji models folder
     */
-    private String[] findStardistModels() throws IOException {
-        FilenameFilter filter = (dir, name) -> name.startsWith("generic");
+    public String[] findStardistModels() {
+        FilenameFilter filter = (dir, name) -> name.endsWith(".zip");
         File[] modelList = modelsPath.listFiles(filter);
-        for (File f : modelList) {
-            if (f.exists())
-               FileUtils.deleteDirectory(f); 
-        }
-        filter = (dir, name) -> name.endsWith(".zip");
-        modelList = modelsPath.listFiles(filter);
         String[] models = new String[modelList.length];
         for (int i = 0; i < modelList.length; i++) {
             models[i] = modelList[i].getName();
         }
+        Arrays.sort(models);
         return(models);
     }
     

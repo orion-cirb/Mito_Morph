@@ -91,9 +91,6 @@ public class Mito_Morph implements PlugIn {
                 outDir.mkdir();
             }
             
-            // remove Old temp Models
-            File modelFolder = proc.modelsPath;
-            FilenameFilter filter = (dir, name) -> name.startsWith("Generic");
     
             // Reset foreground and background
             IJ.run("Colors...", "foreground=white background=black");

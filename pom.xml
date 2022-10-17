@@ -35,13 +35,14 @@
 	</properties>
 
 	<dependencies>
-                <dependency>
-                    <groupId>de.lighti</groupId>
-                    <artifactId>Clipper</artifactId>
-                    <version>6.4.2</version>
-                    <scope>system</scope>
-                    <systemPath>${basedir}/lib/Clipper-6.4.2.jar</systemPath>
-		</dependency>
+                        <!-- Clipper -->
+            <dependency>
+                <groupId>de.lighti</groupId>
+                <artifactId>Clipper</artifactId>
+                <version>6.4.2</version>
+                <scope>system</scope>
+                <systemPath>${basedir}/lib/Clipper-6.4.2.jar</systemPath>
+            </dependency>
                 <dependency>
                     <groupId>de.csbdresden</groupId>
                     <artifactId>csbdeep</artifactId>
@@ -57,12 +58,6 @@
                         <groupId>ome</groupId>
                         <artifactId>bioformats_package</artifactId>
                         <version>6.3.1</version>
-                </dependency>
-                <dependency>
-			<groupId>org.framagit.mcib3d</groupId>
-			<artifactId>mcib3d-core</artifactId>
-			<version>4.0.63</version>
-                        <type>jar</type>
                 </dependency>
                 <dependency>
                         <groupId>ome</groupId>
@@ -143,9 +138,9 @@
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-	  <groupId>org.framagit.mcib3d</groupId>
+	  <groupId>mcib</groupId>
 	  <artifactId>mcib3d-core</artifactId>
-	  <version>4.0.63</version>
+	  <version>4.0.93</version>
 	  <type>jar</type>
 	 </dependency>
 	</dependencies>

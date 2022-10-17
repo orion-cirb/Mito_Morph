@@ -61,13 +61,15 @@ public class StarDist2D extends StarDist2DBase implements Command {
     private ImageJ ij;
     private Object obj_;
     private File tmpModelFile_ = null;
-    
+    private double minColoc = 0.1;     
+    private double maxBB = 0;
+    private int costChoice = 0 ;
     
     private float max = 0; // for association labels
     
     public StarDist2D(Object obj, File tmpModelFile) {
-         ij = new ImageJ();
-         ij.launch();
+        ij = new ImageJ();
+        ij.launch();
         dataset = ij.dataset();
         command = ij.command();
         obj_ = obj;
@@ -110,6 +112,7 @@ public class StarDist2D extends StarDist2DBase implements Command {
         else
             roiPositionActive = roiPosition;
         PrintStream console = System.out;
+        System.out.println("Starting StarDist ...");
         System.setOut(new NullPrintStream());
         try {
             final HashMap<String, Object> paramsCNN = new HashMap<>();
@@ -284,10 +287,10 @@ public class StarDist2D extends StarDist2DBase implements Command {
         max = 0;
         IJ.run(labImg, "Select None", ""); 
         for (int i=1; i<labImg.getNSlices(); i++) {
-             ImagePlus inext = labImg.crop((i+1)+"-"+(i+1));
-             associated[i] = associate(inext, associated[i-1]);
-             inext.flush();
-             inext.close();
+            ImagePlus inext = labImg.crop((i+1)+"-"+(i+1));
+            associated[i] = associate(inext, associated[i-1], max);
+            inext.flush();
+            inext.close();             
         }
         ImagePlus hyperRes = new Concatenator().concatenate(associated, false);
         hyperRes.setDimensions(1, hyperRes.getNFrames(), 1);
@@ -299,14 +302,14 @@ public class StarDist2D extends StarDist2DBase implements Command {
     }
     
     /** Associate the label of frame t-1 with slice z */
-    public ImagePlus associate(ImagePlus ip, ImagePlus ref) {
+    public ImagePlus associate(ImagePlus ip, ImagePlus ref, float max) {
         
         ImageHandler img1 = ImageInt.wrap(ref);
         ImageHandler img2 = ImageInt.wrap(ip);
-        
-        TrackingAssociation association = new TrackingAssociation(img1, img2);
+        TrackingAssociation association = new TrackingAssociation(img1, img2, maxBB, minColoc);
+        association.setMaxLabel(max);
         ImageHandler trackedImage = association.getTrackedImage();
-
+        max = association.getMaxLabel();
         return trackedImage.getImagePlus();
     }
     
